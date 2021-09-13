@@ -20,6 +20,7 @@ class Stock:
 
 load_dotenv('.env')
 
+# Initate database client
 pymongo_configuration = os.getenv('PYMONGO_ADDRESS')
 
 
@@ -29,27 +30,39 @@ db = pymongo.database.Database(mongo, 'stock_analysis')
 social_media_collection = pymongo.collection.Collection(
     db, 'daily_social_media_aggregation')
 
+top_10_list = []
 
-complete_list = []
+# Retrieve top 10 most mentioned stocks on Reddit
 reddit_json = social_media_aggregator.reddit_aggregation()
 
 reddit_dict = json.loads(reddit_json)
+
+# Initate rank
 count = 1
-for top_10 in reddit_dict:
+for stock in reddit_dict:
 
-    temp = reddit_dict[top_10]
+    # temporary dictionary to save us from typing "reddit_dict[stock]['...'] each time"
+    temp_dict = reddit_dict[stock]
+
+    # temporary variable to hold Twitter data for each top 10 stock
     temp_chart_data = json.loads(
-        social_media_aggregator.twitter_aggregation(top_10))
-    temp_date_id = datetime.datetime.now().date().strftime("%m/%d/%Y")
-    stock_object = Stock(temp_date_id, count, top_10, temp['negative_frequency'],
-                         temp['positive_frequency'], temp['probability'],
-                         temp['total_frequency'], temp_chart_data)
+        social_media_aggregator.twitter_aggregation(stock))
 
-    complete_list.append(stock_object)
+    # Create a date id to identify the top 10 stocks for said day (used in database)
+    temp_date_id = datetime.datetime.now().date().strftime("%m/%d/%Y")
+
+    # Create the stock object
+    stock_object = Stock(temp_date_id, count, stock, temp_dict['negative_frequency'],
+                         temp_dict['positive_frequency'], temp_dict['probability'],
+                         temp_dict['total_frequency'], temp_chart_data)
+
+    top_10_list.append(stock_object)
+
+    # Iterate rank
     count += 1
 
 
-print(complete_list)
-t = json.dumps([ob.__dict__ for ob in complete_list])
-b = json.loads(t)
-social_media_collection.insert_many(b)
+top_10_json = json.loads(json.dumps([ob.__dict__ for ob in top_10_list]))
+
+# Insert into the database
+social_media_collection.insert_many(top_10_json)
