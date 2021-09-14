@@ -31,7 +31,7 @@ def not_found(e):
 # API route for front-end to gather aggregate data
 @app.route('/aggregation', methods=['GET'])
 @cross_origin()
-def recommendations():
+def aggregation():
 
     date_id = datetime.datetime.now().date().strftime("%m/%d/%Y")
 
