@@ -50,7 +50,7 @@ const LoadingScreen = () => {
 
 const List = () => {
   const [stockList, setStockList] = useState(null);
-  const api_url = "http://localhost:5000/aggregation";
+  const api_url = "http://localhost:5001/aggregation";
   useEffect(() => {
     axios
       .get(api_url)

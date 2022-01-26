@@ -159,15 +159,16 @@ def twitter_aggregation(target_stock):
     twitter_df = pd.DataFrame()
 
     twitter_current_time = current_time
-    twitter_cutoff = cut_off + datetime.timedelta(days=1)
+    twitter_cutoff = cut_off
+    flag = True
 
     # Gathering the top 100 tweets for each day in the past 7 days
-    while twitter_current_time >= twitter_cutoff:
+    while flag:
         pastday = twitter_current_time - datetime.timedelta(hours=24)
 
-        if pastday == twitter_cutoff:
-            pastday = pastday + datetime.timedelta(hours=5)
-
+        if pastday <= twitter_cutoff:
+            pastday = twitter_cutoff + datetime.timedelta(hours=6)
+            flag = False
         params['start_time'] = pastday.strftime(dtformat)
         params['end_time'] = twitter_current_time.strftime(dtformat)
 
