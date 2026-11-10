@@ -1,6 +1,6 @@
 # Stock Analysis and Algorithmic Trading
 
-A web application that aggregates the top 10 mentioned stocks on the Reddit coommunity 'wallstreetbets' and performs sentiment analysis to determine whether overall sentiment of the stock is bullish or bearish.
+A web application that aggregates the top 10 mentioned stocks on the Reddit community 'wallstreetbets' and performs sentiment analysis to determine whether overall sentiment of the stock is bullish or bearish.
 
 # Motivation
 
